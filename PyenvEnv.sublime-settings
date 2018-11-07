@@ -1,0 +1,13 @@
+{
+	"python_home_envname": null,
+	"valid_syntax": "Packages/Python/Python.sublime-syntax",
+	"valid_file_ext": ".py",
+	"unsaved_is_valid": false,
+	"python_version": null,
+	"debug": false,
+	"pyenv_home": null,
+	"home": null,
+	"python": null,
+	"search_parent": true,
+	"no_comments": true
+}
