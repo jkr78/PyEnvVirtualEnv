@@ -1,10 +1,8 @@
-[comment]: <> [![Build Status](https://travis-ci.org/jkr78/PyenvEnv.svg)](https://travis-ci.org/jkr78/PyenvEnv)
-
 [Pyenv](https://github.com/pyenv/) python versions in sublime text.
 
 ## Installation
 
-Install this sublime text 2/3 package via [Package Control](https://packagecontrol.io/) search for package: "[**PyenvEnv**](https://packagecontrol.io/packages/PyenvEnv)"
+Install this sublime text 3 package via [Package Control](https://packagecontrol.io/) search for package: "[**PyenvEnv**](https://packagecontrol.io/packages/PyenvEnv)"
 
 ### or manually install
 
@@ -25,7 +23,7 @@ Use this environment variable when configuring SublimeLinter, Jedi, Build System
 
 **PyenvEnv.valid_syntax** - "Packages/Python/Python.sublime-syntax"
 
-`Syntax name this plugin is valid for or no check if empty`
+`Syntax name this plugin is valid for or no check if empty.`
 
 **PyenvEnv.valid_file_ext** - ".py"
 
@@ -37,7 +35,7 @@ Use this environment variable when configuring SublimeLinter, Jedi, Build System
 
 **PyenvEnv.python_version** - none
 
-`Override d default python version. Will not search .python-version.`
+`Override default python version. Will not search .python-version.`
 
 **PyenvEnv.debug** - false
 
