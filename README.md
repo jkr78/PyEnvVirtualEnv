@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jkr78/PyenvEnv.svg)](https://travis-ci.org/jkr78/PyenvEnv)
+[comment]: <> [![Build Status](https://travis-ci.org/jkr78/PyenvEnv.svg)](https://travis-ci.org/jkr78/PyenvEnv)
 
 [Pyenv](https://github.com/pyenv/) python versions in sublime text.
 
@@ -23,21 +23,21 @@ Use this environment variable when configuring SublimeLinter, Jedi, Build System
 
 `Environment name (or list of names) python home will be set to.`
 
-**PyenvEnv.valid_syntax** - none
+**PyenvEnv.valid_syntax** - "Packages/Python/Python.sublime-syntax"
 
-`Syntax name this plugin is valid for (ex. "Packages/Python/Python.sublime-syntax")`
+`Syntax name this plugin is valid for or no check if empty`
 
-**PyenvEnv.valid_file_ext** - none
+**PyenvEnv.valid_file_ext** - ".py"
 
-`File extensions this plugin will work with (ex. ".py").`
+`File extensions this plugin will work with or no check if empty.`
 
-**PyenvEnv.unsaved_is_valid** - true
+**PyenvEnv.unsaved_is_valid** - false
 
 `Set environment variable for unsaved files.`
 
 **PyenvEnv.python_version** - none
 
-`Default python version. If not set - plugin will try to search for .python-version.`
+`Override d default python version. Will not search .python-version.`
 
 **PyenvEnv.debug** - false
 
