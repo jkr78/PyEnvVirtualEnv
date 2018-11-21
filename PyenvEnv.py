@@ -15,7 +15,8 @@ DEBUG = 0
 def get_setting(name, default=None, view=None):
     if view is None:
         view = sublime.active_window().active_view() 
-        view_settings = view.settings()
+
+    view_settings = view.settings()
 
     name_with_prefix = SETTINGS_PREFIX + name
     if view_settings.has(name_with_prefix):
@@ -30,9 +31,9 @@ def echo(msg):
         print("{}: {}".format(PLUGIN_NAME, msg))
 
 
-def get_pyenv_home(default=None):
+def get_pyenv_home(default=None, view=None):
     """Returns the home of pyenv."""
-    pyenv_home = get_setting('pyenv_home')
+    pyenv_home = get_setting('pyenv_home', view=view)
     if pyenv_home:
         echo("Using pyenv_home from settings: {}".format(pyenv_home))
         return pyenv_home
@@ -45,9 +46,9 @@ def get_pyenv_home(default=None):
     return default
 
 
-def find_pyenv_python(version):
+def find_pyenv_python(version, view=None):
     """Returns the path to python executable."""
-    pyenv_home = get_pyenv_home()
+    pyenv_home = get_pyenv_home(view=view)
     if not pyenv_home:
         echo("Unable to find pyenv")
         return None
@@ -57,7 +58,7 @@ def find_pyenv_python(version):
         echo("'{}' is not directory".format(home))
         return None
 
-    python = get_setting('python') or 'python'
+    python = get_setting('python', view=view) or 'python'
     path_to_python = os.path.join(home, 'bin', python)
     if not os.path.isfile(path_to_python):
         echo("'{}' does not exists".format(path_to_python))
@@ -67,7 +68,7 @@ def find_pyenv_python(version):
     return path_to_python
 
 
-def get_home():
+def get_home(view=None):
     """Returns home dir."""
     home = get_setting('home', None)
     if home:
@@ -75,6 +76,7 @@ def get_home():
         return home
 
     window = sublime.active_window()
+    
     sublime_vars = window.extract_variables()
 
     # When try project path
@@ -84,19 +86,21 @@ def get_home():
         return home
 
     # After that try filename
-    view = window.active_view()
+    if view is None:
+        view = window.active_view()
+
     file_name = view.file_name()
     if file_name:
         echo("Using file dir: {}".format(file_name))
         return os.path.dirname(file_name)
 
 
-def find_python_version_dotfile():
+def find_python_version_dotfile(view=None):
     """Returns the path of the .python-version dotfile."""
-    home = get_home()
+    home = get_home(view=view)
     echo("Searching for '.python-version' in '{}'".format(home))
 
-    search_parent = get_setting('search_parent', True)
+    search_parent = get_setting('search_parent', True, view=view)
     
     home = os.path.abspath(os.path.expanduser(home))
     while True:
@@ -119,13 +123,13 @@ def find_python_version_dotfile():
     return None
 
 
-def read_python_version_from_dotfile():
+def read_python_version_from_dotfile(view=None):
     """Returns python versions from python-version dotfile."""
-    dotfile = find_python_version_dotfile()
+    dotfile = find_python_version_dotfile(view=view)
     if not dotfile:
         return
 
-    no_comments = get_setting('no_comments', True)
+    no_comments = get_setting('no_comments', True, view=view)
 
     with open(dotfile, 'r') as dotfile_file:
         line = dotfile_file.readline()
@@ -137,8 +141,8 @@ def read_python_version_from_dotfile():
             yield version
 
 
-def get_python_versions_from_settings():
-    python_versions = get_setting('python_version')
+def get_python_versions_from_settings(view=None):
+    python_versions = get_setting('python_version', view=view)
     echo("python_version setting: {}".format(python_versions))
     if not python_versions:
         return None
@@ -149,37 +153,37 @@ def get_python_versions_from_settings():
     return python_versions
 
 
-def python_versions():
-    python_versions = get_python_versions_from_settings()
+def python_versions(view=None):
+    python_versions = get_python_versions_from_settings(view=view)
     if python_versions:
         if not isinstance(python_versions, (list, tuple)):
             python_versions = [python_versions]
 
         return python_versions
 
-    dotfile = find_python_version_dotfile()
+    dotfile = find_python_version_dotfile(view=view)
     if not dotfile:
         return []
 
-    return read_python_version_from_dotfile(dotfile)
+    return read_python_version_from_dotfile(dotfile, view=view)
 
 
-def find_all_python_homes():
+def find_all_python_homes(view=None):
     """Returns all python homes."""
-    for version in python_versions():
-        python = find_pyenv_python(version)
+    for version in python_versions(view=view):
+        python = find_pyenv_python(version, view=view)
         if python:
             yield python
 
 
-def find_python_home(default=None):
+def find_python_home(default=None, view=None):
     """Returns first available python version path."""
-    return next(find_all_python_homes(), default)
+    return next(find_all_python_homes(view=view), default)
 
 
-def set_python_env(python_home):
+def set_python_env(python_home, view=None):
     """Set python environment variables."""
-    python_home_envname = get_setting('python_home_envname')
+    python_home_envname = get_setting('python_home_envname', view=view)
     if not python_home_envname:
         return
 
@@ -226,9 +230,9 @@ def dict_patch(path, value):
     return result
 
 
-def update_project_data():
+def update_project_data(view=None):
     """Update project data variables."""
-    new_data = get_setting('project_data')
+    new_data = get_setting('project_data', view=view)
     if not new_data:
         return
 
@@ -244,8 +248,7 @@ def update_project_data():
 
 def valid_file(view=None):
     if not view:
-        window = sublime.active_window()
-        view = window.active_view()
+        view = sublime.active_window().active_view() 
 
     file_name = view.file_name()
 
@@ -271,8 +274,7 @@ def valid_file(view=None):
 
 def valid_syntax(view=None):
     if view is None:
-        window = sublime.active_window()
-        view = window.active_view()
+        view = sublime.active_window().active_view() 
 
     syntax = view.settings().get('syntax')
 
@@ -301,18 +303,18 @@ class PyEnvVirtualEnvListener(sublime_plugin.EventListener):
             return
 
         # shortcut
-        python_home_envname = get_setting('python_home_envname')
+        python_home_envname = get_setting('python_home_envname', view=view)
         if not python_home_envname:
             echo("'python_home_envname' is not set")
             return
 
-        python_home = find_python_home()
+        python_home = find_python_home(view=view)
         if not python_home:
             return
 
         set_python_env(python_home)
-        update_project_data()
+        update_project_data(view=view)
 
     def on_post_save(self, view):
-        if view.file_name() == sublime.active_window().project_file_name():        
-            update_project_data()
+        if view.file_name() == sublime.active_window().project_file_name():
+            update_project_data(view=view)
