@@ -1,6 +1,5 @@
 import os
 import os.path
-import six
 
 import sublime
 import sublime_plugin
@@ -215,7 +214,7 @@ def dict_patch(path, value):
     if not path:
         return value
 
-    if isinstance(path, six.string_types):
+    if isinstance(path, str):
         path = path.split(".")
 
     curr = result = {}
