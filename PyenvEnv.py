@@ -242,9 +242,11 @@ def update_project_data():
     sublime.active_window().set_project_data(data)
 
 
-def valid_file():
-    window = sublime.active_window()
-    view = window.active_view()
+def valid_file(view=None):
+    if not view:
+        window = sublime.active_window()
+        view = window.active_view()
+
     file_name = view.file_name()
 
     unsaved_is_valid = get_setting('unsaved_is_valid', True)
@@ -267,9 +269,11 @@ def valid_file():
     return True
 
 
-def valid_syntax():
-    window = sublime.active_window()
-    view = window.active_view()
+def valid_syntax(view=None):
+    if view is None:
+        window = sublime.active_window()
+        view = window.active_view()
+
     syntax = view.settings().get('syntax')
 
     valid_syntax = get_setting('valid_syntax')
@@ -293,7 +297,7 @@ class PyEnvVirtualEnvListener(sublime_plugin.EventListener):
         self.active_project = sublime.active_window().project_file_name()
 
     def on_activated(self, view):
-        if not (valid_syntax() or valid_file()):
+        if not (valid_syntax(view) or valid_file(view)):
             return
 
         # shortcut
