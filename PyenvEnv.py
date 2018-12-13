@@ -53,14 +53,14 @@ def find_pyenv_python(version, view=None):
         echo("Unable to find pyenv")
         return None
 
-    home = os.path.join(pyenv_home, 'versions', version)
-    if not os.path.isdir(home):
+    home = os.path.expanduser(os.path.join(pyenv_home, 'versions', version))
+    if not os.path.isdir(os.path.realpath(home)):
         echo("'{}' is not directory".format(home))
         return None
 
     python = get_setting('python', view=view) or 'python'
-    path_to_python = os.path.join(home, 'bin', python)
-    if not os.path.isfile(path_to_python):
+    path_to_python = os.path.expanduser(os.path.join(home, 'bin', python))
+    if not os.path.isfile(os.path.realpath(path_to_python)):
         echo("'{}' does not exists".format(path_to_python))
         return None
 
@@ -161,11 +161,7 @@ def python_versions(view=None):
 
         return python_versions
 
-    dotfile = find_python_version_dotfile(view=view)
-    if not dotfile:
-        return []
-
-    return read_python_version_from_dotfile(dotfile, view=view)
+    return read_python_version_from_dotfile(view=view)
 
 
 def find_all_python_homes(view=None):
